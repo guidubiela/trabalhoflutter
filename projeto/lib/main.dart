@@ -12,7 +12,7 @@ class _ExemploInicial extends State {
   var _currentPage = 0;
   var _pages = {
     Text("Página 1 - ínicio"),
-    Text("Página 2 - Carrinho"),
+    Text("Página 2 - Carrinhoo"),
     Text("Página 3 - Pagamento")
   };
   @override
