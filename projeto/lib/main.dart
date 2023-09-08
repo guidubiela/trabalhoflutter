@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 void main() {
   runApp(Padaria());
-}
-
-class Product {
-  final String nome;
-  final double preco;
-  int quantidade;
-
-  Product({required this.nome, required this.preco, this.quantidade = 0});
 }
 
 class Padaria extends StatelessWidget {
@@ -20,9 +13,106 @@ class Padaria extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      home: ProductListScreen(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => HomeScreen(),
+        '/sobre': (context) => SobreScreen(),
+      },
     );
   }
+}
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 247, 217, 128),
+      appBar: AppBar(
+        title: Text('Tela Inicial'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image.asset(
+              'assets/padoca.png',
+              width: 200,
+              height: 200,
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Bem-vindo à Padoca do Seu Zé',
+              style: TextStyle(
+                color: const Color.fromARGB(255, 0, 0, 0),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProductListScreen(),
+                  ),
+                );
+              },
+              child: Text(
+                'Começar',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/sobre');
+              },
+              child: Text(
+                'Sobre',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SobreScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Sobre'),
+      ),
+      body: Container(
+        color: const Color.fromARGB(255, 247, 217, 128),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Este é o aplicativo da Padoca do Seu Zé (na esquina). Desenvolvido por Guilherme Dubiela.',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.black, 
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class Product {
+  final String nome;
+  final double preco;
+  int quantidade;
+
+  Product({required this.nome, required this.preco, this.quantidade = 0});
 }
 
 class ProductListScreen extends StatefulWidget {
@@ -87,14 +177,23 @@ class _ProductListScreenState extends State<ProductListScreen> {
   }
 }
 
-class SelectedProductsScreen extends StatelessWidget {
+class SelectedProductsScreen extends StatefulWidget {
   final List<Product> selectedProducts;
 
   SelectedProductsScreen({required this.selectedProducts});
 
+  @override
+  _SelectedProductsScreenState createState() =>
+      _SelectedProductsScreenState();
+}
+
+class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
+  bool isLoading = false;
+  bool compraFinalizada = false;
+
   double calcularTotalPreco() {
     double total = 0.0;
-    for (var product in selectedProducts) {
+    for (var product in widget.selectedProducts) {
       total += product.preco * product.quantidade;
     }
     return total;
@@ -108,16 +207,23 @@ class SelectedProductsScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Total: R\$ ${calcularTotalPreco().toStringAsFixed(2)}',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
           Expanded(
             child: ListView.builder(
-              itemCount: selectedProducts.length,
+              itemCount: widget.selectedProducts.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(selectedProducts[index].nome),
+                  title: Text(widget.selectedProducts[index].nome),
                   subtitle: Text(
-                      'R\$ ${selectedProducts[index].preco.toStringAsFixed(2)}'),
+                      'R\$ ${widget.selectedProducts[index].preco.toStringAsFixed(2)}'),
                   trailing: Text(
-                    'Quantidade: ${selectedProducts[index].quantidade}',
+                    'Quantidade: ${widget.selectedProducts[index].quantidade}',
                   ),
                 );
               },
@@ -125,12 +231,32 @@ class SelectedProductsScreen extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Total: R\$ ${calcularTotalPreco().toStringAsFixed(2)}',
-              style: TextStyle(fontSize:18, fontWeight: FontWeight.bold),
-            ),
+            child: compraFinalizada
+                ? Text(
+                    'Compra Finalizada!',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  )
+                : isLoading
+                    ? SpinKitFadingCircle(
+                        color: Colors.blue,
+                        size: 50.0,
+                      )
+                    : ElevatedButton(
+                        onPressed: () async {
+                          if (isLoading) return;
+                          setState(() {
+                            isLoading = true;
+                          });
+                          await Future.delayed(Duration(seconds: 2));
+                          setState(() {
+                            isLoading = false;
+                            compraFinalizada = true;
+                          });
+                        },
+                        child: Text('Finalizar Compra'),
+                      ),
           ),
-        ], 
+        ],
       ),
     );
   }
