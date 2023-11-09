@@ -1,4 +1,4 @@
-import 'menu.dart';
+import 'main.dart';
 import 'produtos.dart';
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
@@ -73,8 +73,14 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
               },
             ),
           ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/produtos');
+            },
+            child: Text('Continuar comprando')
+          ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(12.0),
             child: ElevatedButton(
               onPressed: () {
                 for (var product in _products) {
