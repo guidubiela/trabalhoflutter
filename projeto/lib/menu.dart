@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projeto/compraRealizada.dart';
 import 'carrinho.dart';
 import 'produtos.dart';
 import 'sobre.dart';
@@ -19,7 +20,8 @@ class Padaria extends StatelessWidget {
       routes: {
         '/': (context) => HomeScreen(),
         '/sobre': (context) => SobreScreen(),
-        '/produtos':(context) => ProductListScreen()
+        '/produtos':(context) => ProductListScreen(),
+        '/compraRealizada': (context) => PurchaseScreen()
       },
     );
   }

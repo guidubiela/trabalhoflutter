@@ -1,26 +1,34 @@
 import 'menu.dart';
 import 'produtos.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'database_helper.dart';
 
 class SelectedProductsScreen extends StatefulWidget {
-  final List<Product> selectedProducts;
-
-  SelectedProductsScreen({required this.selectedProducts});
-
   @override
-  _SelectedProductsScreenState createState() =>
-      _SelectedProductsScreenState();
+  _SelectedProductsScreenState createState() => _SelectedProductsScreenState();
 }
 
 class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
-  bool isLoading = false;
-  bool compraFinalizada = false;
+  final dbHelper = DatabaseHelper();
+  List<Map<String, dynamic>> _products = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProducts();
+  }
+
+  void _loadProducts() async {
+    final products = await dbHelper.getAllProducts();
+    setState(() {
+      _products = products;
+    });
+  }
 
   double calcularTotalPreco() {
-    double total = 0.0;
-    for (var product in widget.selectedProducts) {
-      total += product.preco * product.quantidade;
+    double total = 0.00;
+    for (var product in _products) {
+      total += product['preco'] * product['qtd'];
     }
     return total;
   }
@@ -42,14 +50,24 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: widget.selectedProducts.length,
+              itemCount: _products.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(widget.selectedProducts[index].nome),
+                  title: Text(_products[index]['nome']),
                   subtitle: Text(
-                      'R\$ ${widget.selectedProducts[index].preco.toStringAsFixed(2)}'),
-                  trailing: Text(
-                    'Quantidade: ${widget.selectedProducts[index].quantidade}',
+                      'R\$ ${_products[index]['preco']} - Quantidade: ${_products[index]['qtd']}'),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          dbHelper.deleteProduct(_products[index]['id']);
+                          _loadProducts();
+                        },
+                        icon: Icon(Icons.delete),
+                        color: Colors.redAccent,
+                      )
+                    ],
                   ),
                 );
               },
@@ -57,30 +75,13 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: compraFinalizada
-                ? Text(
-                    'Compra Finalizada!',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  )
-                : isLoading
-                    ? SpinKitFadingCircle(
-                        color: Colors.amber,
-                        size: 50.0,
-                      )
-                    : ElevatedButton(
-                        onPressed: () async {
-                          if (isLoading) return;
-                          setState(() {
-                            isLoading = true;
-                          });
-                          await Future.delayed(Duration(seconds: 2));
-                          setState(() {
-                            isLoading = false;
-                            compraFinalizada = true;
-                          });
-                        },
-                        child: Text('Finalizar Compra'),
-                      ),
+            child: ElevatedButton(
+              onPressed: () {
+                //dbHelper.deleteProduct(id)
+                Navigator.pushNamed(context, '/compraRealizada');
+              },
+              child: Text('Finalizar Compra'),
+            ),
           ),
         ],
       ),

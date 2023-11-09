@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'menu.dart';
 import 'carrinho.dart';
+import 'database_helper.dart';
 
 class Product {
   final String nome;
@@ -16,6 +17,8 @@ class ProductListScreen extends StatefulWidget {
 }
 
 class _ProductListScreenState extends State<ProductListScreen> {
+  final dbHelper = DatabaseHelper();
+
   List<Product> products = [
     Product(nome: "Pão", preco: 1.50),
     Product(nome: "Bolo", preco: 15.00),
@@ -59,11 +62,19 @@ class _ProductListScreenState extends State<ProductListScreen> {
         onPressed: () {
           List<Product> selectedProducts =
               products.where((product) => product.quantidade > 0).toList();
+
+          for (var product in selectedProducts) {
+            dbHelper.insertProduct(
+                product.nome,
+                product.preco,
+                product.quantidade
+            );
+          }
+
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  SelectedProductsScreen(selectedProducts: selectedProducts),
+              builder: (context) => SelectedProductsScreen(),
             ),
           );
         },
@@ -71,4 +82,3 @@ class _ProductListScreenState extends State<ProductListScreen> {
     );
   }
 }
-
