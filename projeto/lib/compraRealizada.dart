@@ -35,7 +35,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Realizando Compra'),
+        title: Text('Finalizando Compra'),
       ),
       body: Center(
         child: Column(
@@ -44,7 +44,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
             isPurchasing
                 ? CircularProgressIndicator()
                 : Text(
-                    'Compra Realizada!',
+                    'Compra Finalizada!',
                     style: TextStyle(fontSize: 24),
                   ),
           ],

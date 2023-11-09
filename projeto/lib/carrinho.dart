@@ -55,7 +55,7 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
                 return ListTile(
                   title: Text(_products[index]['nome']),
                   subtitle: Text(
-                      'R\$ ${_products[index]['preco']} - Quantidade: ${_products[index]['qtd']}'),
+                      '${_products[index]['qtd']} x  R\$ ${_products[index]['preco'].toStringAsFixed(2)}'),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -77,7 +77,10 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               onPressed: () {
-                //dbHelper.deleteProduct(id)
+                for (var product in _products) {
+                  dbHelper.deleteProduct(product['id']);
+                }
+                _loadProducts();
                 Navigator.pushNamed(context, '/compraRealizada');
               },
               child: Text('Finalizar Compra'),

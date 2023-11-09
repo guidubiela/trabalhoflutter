@@ -38,25 +38,18 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getAllProducts() async {
     final db = await database;
     return db.query('carrinho', orderBy: 'id');
-    
   }
 
   Future<void> updateProduct(int id, String nome, double preco, int qtd) async {
     final db = await database;
     final data = {'nome': nome, 'preco': preco, 'qtd': qtd};
-    await db.update(
-      'carrinho',
-      data,
-      where: 'id = ?',
-      whereArgs: [id]
-    );
+    await db.update('carrinho', data, where: 'id = ?', whereArgs: [id]);
   }
 
   Future<void> deleteProduct(int id) async {
     final db = await database;
     try {
       await db.delete('carrinho', where: 'id = ?', whereArgs: [id]);
-    }
-    catch (e)  {}
+    } catch (e) {}
   }
 }
