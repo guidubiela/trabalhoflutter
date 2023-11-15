@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'menu.dart';
+import 'main.dart';
 
 
 class PurchaseScreen extends StatefulWidget {
@@ -43,10 +43,17 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
           children: <Widget>[
             isPurchasing
                 ? CircularProgressIndicator()
-                : Text(
-                    'Compra Finalizada!',
-                    style: TextStyle(fontSize: 24),
-                  ),
+                : Text('Compra Finalizada!',style: TextStyle(fontSize: 24)),
+                if (isPurchasing == false)
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/produtos');
+                      },
+                      child: Text('Pronto')
+                    ),
+                  )
           ],
         ),
       ),

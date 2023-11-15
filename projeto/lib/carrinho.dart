@@ -1,4 +1,4 @@
-import 'menu.dart';
+import 'main.dart';
 import 'produtos.dart';
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
@@ -33,6 +33,8 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
     return total;
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,10 +57,38 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
                 return ListTile(
                   title: Text(_products[index]['nome']),
                   subtitle: Text(
-                      '${_products[index]['qtd']} x  R\$ ${_products[index]['preco'].toStringAsFixed(2)}'),
+                      'R\$ ${_products[index]['preco'].toStringAsFixed(2)}'),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      IconButton(
+                        onPressed: () {
+                          if(_products[index]['qtd'] == 1) {
+                            dbHelper.deleteProduct(_products[index]['id']);
+                            _loadProducts();
+                          }
+                          else if (_products[index]['qtd'] >= 1) {
+                            dbHelper.updateProduct(
+                              _products[index]['id'],
+                              _products[index]['qtd'] - 1
+                            );
+                            _loadProducts();
+                          }
+                        },
+                        icon: Icon(Icons.remove),
+                        color: Colors.black,
+                      ),
+                      Text('${_products[index]['qtd']}'),
+                      IconButton(
+                          onPressed: () {
+                            dbHelper.updateProduct(
+                              _products[index]['id'],
+                              _products[index]['qtd'] + 1
+                            );
+                            _loadProducts();
+                          },
+                          icon: Icon(Icons.add),
+                          color: Colors.black),
                       IconButton(
                         onPressed: () {
                           dbHelper.deleteProduct(_products[index]['id']);
@@ -73,8 +103,13 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
               },
             ),
           ),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/produtos');
+              },
+              child: Text('Continuar comprando')),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(12.0),
             child: ElevatedButton(
               onPressed: () {
                 for (var product in _products) {

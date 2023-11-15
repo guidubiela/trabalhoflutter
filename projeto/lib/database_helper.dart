@@ -40,10 +40,9 @@ class DatabaseHelper {
     return db.query('carrinho', orderBy: 'id');
   }
 
-  Future<void> updateProduct(int id, String nome, double preco, int qtd) async {
+  Future<void> updateProduct(int id, int qtd) async {
     final db = await database;
-    final data = {'nome': nome, 'preco': preco, 'qtd': qtd};
-    await db.update('carrinho', data, where: 'id = ?', whereArgs: [id]);
+    await db.update('carrinho', {'qtd' : qtd}, where: 'id = ?', whereArgs: [id]);
   }
 
   Future<void> deleteProduct(int id) async {
