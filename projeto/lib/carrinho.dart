@@ -104,10 +104,11 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
             ),
           ),
           ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/produtos');
-              },
-              child: Text('Continuar comprando')),
+            onPressed: () {
+              Navigator.pushNamed(context, '/produtos');
+            },
+            child: Text('Continuar comprando')
+          ),
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: ElevatedButton(
