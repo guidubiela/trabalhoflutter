@@ -32,6 +32,8 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
     return total;
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,6 +75,34 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
                             _loadProducts();
                           },
                           icon: Icon(Icons.add)),
+                      IconButton(
+                        onPressed: () {
+                          if(_products[index]['qtd'] == 1) {
+                            dbHelper.deleteProduct(_products[index]['id']);
+                            _loadProducts();
+                          }
+                          else if (_products[index]['qtd'] >= 1) {
+                            dbHelper.updateProduct(
+                              _products[index]['id'],
+                              _products[index]['qtd'] - 1
+                            );
+                            _loadProducts();
+                          }
+                        },
+                        icon: Icon(Icons.remove),
+                        color: Colors.black,
+                      ),
+                      Text('${_products[index]['qtd']}'),
+                      IconButton(
+                          onPressed: () {
+                            dbHelper.updateProduct(
+                              _products[index]['id'],
+                              _products[index]['qtd'] + 1
+                            );
+                            _loadProducts();
+                          },
+                          icon: Icon(Icons.add),
+                          color: Colors.black),
                       IconButton(
                         onPressed: () {
                           dbHelper.deleteProduct(_products[index]['id']);
