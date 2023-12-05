@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto/compraRealizada.dart';
-import 'carrinho.dart';
+import 'package:projeto/compras.dart';
 import 'produtos.dart';
 import 'sobre.dart';
 
@@ -20,8 +20,9 @@ class Padaria extends StatelessWidget {
       routes: {
         '/': (context) => HomeScreen(),
         '/sobre': (context) => SobreScreen(),
-        '/produtos':(context) => ProductListScreen(),
-        '/compraRealizada': (context) => PurchaseScreen()
+        '/produtos': (context) => ProductListScreen(),
+        '/compraRealizada': (context) => PurchaseScreen(),
+        '/compras':(context) => Compras()
       },
     );
   }
@@ -73,10 +74,19 @@ class HomeScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18),
               ),
             ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/compras');
+              },
+              child: Text(
+                'Compras',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
-

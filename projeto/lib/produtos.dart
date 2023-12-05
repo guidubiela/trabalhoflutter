@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
 import 'carrinho.dart';
 import 'database_helper.dart';
 

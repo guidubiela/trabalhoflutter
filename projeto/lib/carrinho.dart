@@ -1,5 +1,3 @@
-import 'main.dart';
-import 'produtos.dart';
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
 
@@ -15,6 +13,7 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
   @override
   void initState() {
     super.initState();
+    dbHelper.initDatabase();
     _loadProducts();
   }
 
@@ -32,16 +31,6 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
     }
     return total;
   }
-
-  void adicionar() {
-    setState(() {
-      for (var product in _products) {
-        product['qtd']++;
-      }
-    });
-  }
-
-  var qtd = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -70,24 +59,20 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        onPressed: () {
-                          if (_products[index]['qtd'] > 0) {
-                            qtd = _products[index]['qtd'] --;
-                          }
-                          dbHelper.updateProduct(_products[index]['id'], _products[index]['nome'], _products[index]['preco'], qtd);
-                          _loadProducts();
-                        },
-                        icon: Icon(Icons.remove)
-                      ),
+                          onPressed: () {
+                            dbHelper.updateProduct(_products[index]['id'],
+                                _products[index]['qtd']--);
+                            _loadProducts();
+                          },
+                          icon: Icon(Icons.remove)),
                       Text('${_products[index]['qtd']}'),
                       IconButton(
-                        onPressed: () {
-                          qtd = _products[index]['qtd'] ++;
-                          dbHelper.updateProduct(_products[index]['id'], _products[index]['nome'], _products[index]['preco'], qtd);
-                          _loadProducts();
-                        },
-                        icon: Icon(Icons.add)
-                      ),
+                          onPressed: () {
+                            dbHelper.updateProduct(_products[index]['id'],
+                                _products[index]['qtd']++);
+                            _loadProducts();
+                          },
+                          icon: Icon(Icons.add)),
                       IconButton(
                         onPressed: () {
                           dbHelper.deleteProduct(_products[index]['id']);
@@ -111,11 +96,13 @@ class _SelectedProductsScreenState extends State<SelectedProductsScreen> {
             padding: const EdgeInsets.all(12.0),
             child: ElevatedButton(
               onPressed: () {
+                var total = 0.0;
                 for (var product in _products) {
-                  dbHelper.deleteProduct(product['id']);
+                  total = product['qtd'] * product['preco'];
+                  dbHelper.insertPurchases(
+                      product['nome'], product['preco'], product['qtd'], total);
                 }
-                _loadProducts();
-                Navigator.pushNamed(context, '/compraRealizada');
+                //Navigator.pushNamed(context, '/compraRealizada');
               },
               child: Text('Finalizar Compra'),
             ),

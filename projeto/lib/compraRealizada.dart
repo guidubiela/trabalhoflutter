@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'main.dart';
 
 
 class PurchaseScreen extends StatefulWidget {
@@ -35,7 +34,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Finalizando Compra'),
+        title: const Text('Finalizando Compra'),
       ),
       body: Center(
         child: Column(
